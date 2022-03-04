@@ -1,7 +1,7 @@
 package address.gui;
 
 import javax.swing.*;
-import java.awt.*;
+
 
 public class MainFrame extends JFrame {
 
@@ -15,6 +15,7 @@ public class MainFrame extends JFrame {
     private JTextField emailDisplay;
     private JTextField phoneDisplay;
     private JScrollPane scrollPanel;
+    private JTextPane textPanel;
 
     public MainFrame() {
         setContentPane(MainPanel);
@@ -23,5 +24,14 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    public JButton getDisplayButton() {
+        return displayButton;
+    }
+
+    public JTextPane getTextPanel() {
+        return textPanel;
+    }
+
 
 }

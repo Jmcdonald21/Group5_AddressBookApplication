@@ -3,6 +3,10 @@ import address.data.AddressBook;
 import address.data.AddressEntry;
 import address.gui.MainFrame;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 
@@ -36,9 +40,18 @@ public class AddressBookApplication {
         //create instance of MainFrame for application
         MainFrame myFrame = new MainFrame();
 
+
         //Loop
         boolean continueLoop = true;
         while(continueLoop) {
+
+            myFrame.getDisplayButton().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    myFrame.getTextPanel().setText(ab.toString());
+                }
+            });
+
             //display menu
             Menu.display_Menu();
             //grab users choice and based on this invoke code

@@ -11,7 +11,7 @@ import java.io.*;
  *
  * The purpose of this class is to represent a generic address book
  */
-public class AddressBook extends JPanel{
+public class AddressBook extends JPanel {
 
     /**
      * the data structures that will hold the data for the address book. Composed of a TreeMap
@@ -26,12 +26,12 @@ public class AddressBook extends JPanel{
     //JList for scrollable panel
 
 
-
     /** a method which prints out all fields in all entries of the address book
      *
      */
     public void list() {
-        System.out.print(this.toString());
+
+        this.toString();
 
     }
 

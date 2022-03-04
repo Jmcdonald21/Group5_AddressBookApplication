@@ -18,7 +18,12 @@
           <enabled value="true"/>
         </properties>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="bc079" class="javax.swing.JTextPane" binding="textPanel">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
       </scrollpane>
       <component id="9f1b2" class="javax.swing.JButton" binding="displayButton" default-binding="true">
         <constraints>
