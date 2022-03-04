@@ -1,6 +1,7 @@
 package address;
 import address.data.AddressBook;
 import address.data.AddressEntry;
+import address.gui.MainFrame;
 
 import java.io.*;
 import java.util.*;
@@ -28,9 +29,12 @@ public class AddressBookApplication {
 
         //Code to Loop until user chooses to Quit
         //Display Menu of options, based on user's choice
-        //invoke apprpriate code.
+        //invoke appropriate code.
         Scanner keyboard = new Scanner(System.in);
         String answer;
+
+        //create instance of MainFrame for application
+        MainFrame myFrame = new MainFrame();
 
         //Loop
         boolean continueLoop = true;
