@@ -1,8 +1,11 @@
 package address.data;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.io.*;
+
 
 /**
  * @author Student Name
@@ -11,7 +14,7 @@ import java.io.*;
  *
  * The purpose of this class is to represent a generic address book
  */
-public class AddressBook extends JPanel {
+public class AddressBook extends JFrame {
 
     /**
      * the data structures that will hold the data for the address book. Composed of a TreeMap
@@ -21,9 +24,60 @@ public class AddressBook extends JPanel {
      * sorted order by last name(key) easy.
      */
     private final TreeMap<String, TreeSet<AddressEntry>> addressEntryList = new TreeMap<>();
+    private JPanel mainPanel;
+    private JList<AddressEntry> addressEntryJList;
+    private JButton findButton;
+    private JButton listButton;
+    private JButton addButton;
+    private JButton editButton;
+    private JTextField findAddressEntry;
+    private JButton removeButton;
+    private JTextField firstNameEntry;
+    private JTextField lastNameEntry;
+    private JTextField streetEntry;
+    private JTextField cityEntry;
+    private JTextField stateEntry;
+    private JTextField zipEntry;
+    private JTextField emailEntry;
+    private JTextField phoneEntry;
+    private DefaultListModel<AddressEntry> listModel;
 
 
     //JList for scrollable panel
+    public AddressBook() {
+        setContentPane(mainPanel);
+        setTitle("Address Book");
+        setSize(750, 300);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setVisible(true);
+
+        listModel = new DefaultListModel<>();
+        addressEntryJList.setModel(listModel);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddressEntry addEntry = new AddressEntry(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText()
+                                                            , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText());
+                addressEntryList.computeIfAbsent(addEntry.getLastName(), k -> new TreeSet<>()).add(addEntry);
+                listModel.addElement(addEntry);
+                firstNameEntry.setText("");
+                lastNameEntry.setText("");
+                streetEntry.setText("");
+                cityEntry.setText("");
+                stateEntry.setText("");
+                zipEntry.setText("");
+                emailEntry.setText("");
+                phoneEntry.setText("");
+            }
+        });
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listModel.removeElementAt(addressEntryJList.getSelectedIndex());
+            }
+        });
+    }
 
 
     /** a method which prints out all fields in all entries of the address book
@@ -96,6 +150,7 @@ public class AddressBook extends JPanel {
      */
     public void add(AddressEntry entry) {
         addressEntryList.computeIfAbsent(entry.getLastName(), k -> new TreeSet<>()).add(entry);
+        listModel.addElement(entry);
     }
 
     /** a method which reads in address entries from a text file and adds them to the address book

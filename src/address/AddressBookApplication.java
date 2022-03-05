@@ -1,13 +1,7 @@
 package address;
-import address.data.AddressBook;
 import address.data.AddressEntry;
-import address.gui.MainFrame;
+import address.data.AddressBook;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
 import java.util.*;
 
 /**
@@ -28,7 +22,7 @@ public class AddressBookApplication {
     public static void main(String[] args) {
 
         //create instance of AddressBook for application
-        AddressBook ab = new AddressBook();
+        address.data.AddressBook ab = new address.data.AddressBook();
         initAddressBook(ab);
 
         //Code to Loop until user chooses to Quit
@@ -38,19 +32,10 @@ public class AddressBookApplication {
         String answer;
 
         //create instance of MainFrame for application
-        MainFrame myFrame = new MainFrame();
-
 
         //Loop
         boolean continueLoop = true;
         while(continueLoop) {
-
-            myFrame.getDisplayButton().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    myFrame.getTextPanel().setText(ab.toString());
-                }
-            });
 
             //display menu
             Menu.display_Menu();
@@ -86,7 +71,7 @@ public class AddressBookApplication {
      * initializes 2 AddressEntry instances with hard-coded data. Then adds entries to AddressBook class passed to function.
      * @param ab is an instance of AddressBook class
      */
-    public static void initAddressBook(AddressBook ab) {
+    public static void initAddressBook(address.data.AddressBook ab) {
         AddressEntry entry1 = new AddressEntry("Sterling", "Jeppson",
                                                 "2759 Vine Dr.","Livermore",
                                                 "CA", 94550, "sterlingijeppson@gmail.com", "925-289-6963");
