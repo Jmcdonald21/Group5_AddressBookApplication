@@ -1,8 +1,11 @@
 package address;
 import address.data.AddressEntry;
 import address.data.AddressBook;
+import address.DataBaseConnect;
 
 import java.util.*;
+import java.sql.*;
+
 
 /**
  * @author Student Name
@@ -19,7 +22,10 @@ public class AddressBookApplication {
      * then prompts the user to add, delete, list, and search for entries.
      * @param args command line arguments passed to main
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+
+        DataBaseConnect.testAddressEntryTable();
+
 
         //create instance of AddressBook for application
         address.data.AddressBook ab = new address.data.AddressBook();
@@ -81,6 +87,7 @@ public class AddressBookApplication {
         ab.add(entry1);
         ab.add(entry2);
     }
+
 
 
 
