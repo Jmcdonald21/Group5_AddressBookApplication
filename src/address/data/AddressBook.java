@@ -1,6 +1,8 @@
 package address.data;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -40,8 +42,8 @@ public class AddressBook extends JFrame {
     private JTextField zipEntry;
     private JTextField emailEntry;
     private JTextField phoneEntry;
+    private JTextField idEntry;
     private DefaultListModel<AddressEntry> listModel;
-
 
     //JList for scrollable panel
     public AddressBook() {
@@ -58,8 +60,8 @@ public class AddressBook extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AddressEntry addEntry = new AddressEntry(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText()
-                                                            , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText());
-                addressEntryList.computeIfAbsent(addEntry.getLastName(), k -> new TreeSet<>()).add(addEntry);
+                                                            , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText());
+                addressEntryList.computeIfAbsent(addEntry.name.getLastName(), k -> new TreeSet<>()).add(addEntry);
                 listModel.addElement(addEntry);
                 firstNameEntry.setText("");
                 lastNameEntry.setText("");
@@ -69,12 +71,43 @@ public class AddressBook extends JFrame {
                 zipEntry.setText("");
                 emailEntry.setText("");
                 phoneEntry.setText("");
+                idEntry.setText("");
             }
         });
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                firstNameEntry.setText("");
+                lastNameEntry.setText("");
+                streetEntry.setText("");
+                cityEntry.setText("");
+                stateEntry.setText("");
+                zipEntry.setText("");
+                emailEntry.setText("");
+                phoneEntry.setText("");
+                idEntry.setText("");
                 listModel.removeElementAt(addressEntryJList.getSelectedIndex());
+                addressEntryList.remove(addressEntryJList.getSelectedIndex());
+            }
+        });
+        addressEntryJList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                firstNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getFirstName());
+                lastNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getLastName());
+                streetEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getStreet());
+                cityEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getCity());
+                stateEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getState());
+                zipEntry.setText(Integer.toString(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getZip()));
+                emailEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getEmail());
+                phoneEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getPhone());
+                idEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getId());
+            }
+        });
+        listButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
@@ -110,7 +143,7 @@ public class AddressBook extends JFrame {
                 System.out.printf("%-3s" + s.first() + "\n", " ");
                 System.out.println("Hit 'y' to remove the entry or 'n' to return to main menu");
                 if (keyboard.nextLine().compareTo("y") == 0)
-                    addressEntryList.get(s.first().getLastName()).remove(s.first());
+                    addressEntryList.get(s.first().name.getLastName()).remove(s.first());
             } else if (s.size() > 1) {
                 ArrayList<AddressEntry> list = new ArrayList<>();
                 int i = 1;
@@ -127,7 +160,7 @@ public class AddressBook extends JFrame {
                     System.out.println("Hit 'y' to remove the following entry or 'n' to return to main menu:\n");
                 System.out.printf("%-3s" + list.get(removalIndex) + "\n\n", "  ");
                 if (keyboard.nextLine().compareTo("y") == 0) {
-                    TreeSet<AddressEntry> set = addressEntryList.get(list.get(removalIndex).getLastName());
+                    TreeSet<AddressEntry> set = addressEntryList.get(list.get(removalIndex).name.getLastName());
                     set.remove(list.get(removalIndex));
                 }
             } else
@@ -149,7 +182,7 @@ public class AddressBook extends JFrame {
      * If the key has been seen before then entry is simply added to the correct set.
      */
     public void add(AddressEntry entry) {
-        addressEntryList.computeIfAbsent(entry.getLastName(), k -> new TreeSet<>()).add(entry);
+        addressEntryList.computeIfAbsent(entry.name.getLastName(), k -> new TreeSet<>()).add(entry);
         listModel.addElement(entry);
     }
 
@@ -169,11 +202,11 @@ public class AddressBook extends JFrame {
             //count number of entries processed
             int count =0;
 
-            //read from filea
+            //read from file
             while((line=br.readLine()) != null) {
 
                 this.add(new AddressEntry(line, br.readLine(), br.readLine(), br.readLine(),
-                                          br.readLine(), Integer.parseInt(br.readLine()), br.readLine(), br.readLine()));
+                                          br.readLine(), Integer.parseInt(br.readLine()), br.readLine(), br.readLine(), br.readLine()));
 
                 count++;
             }

@@ -80,10 +80,10 @@ public class AddressBookApplication {
     public static void initAddressBook(address.data.AddressBook ab) {
         AddressEntry entry1 = new AddressEntry("Sterling", "Jeppson",
                                                 "2759 Vine Dr.","Livermore",
-                                                "CA", 94550, "sterlingijeppson@gmail.com", "925-289-6963");
+                                                "CA", 94550, "sterlingijeppson@gmail.com", "925-289-6963", "1");
         AddressEntry entry2 = new AddressEntry("D.S", "Malik",
                 "2759 Vine Dr.","Livermore",
-                "CA", 94550, "sterlingijeppson@gmail.com","925-289-6963");
+                "CA", 94550, "sterlingijeppson@gmail.com","925-289-6963", "2");
         ab.add(entry1);
         ab.add(entry2);
     }

@@ -35,22 +35,22 @@ public class AddressBookTest {
     /**
      * An instance of AddressEntry to load into AddressBook
      */
-    private final AddressEntry ae1 = new AddressEntry("John", "A", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924");
+    private final AddressEntry ae1 = new AddressEntry("John", "A", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924", "1");
 
     /**
      * An instance of AddressEntry to load into AddressBook
      */
-    private final AddressEntry ae2 = new AddressEntry("John", "Doe", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924");
+    private final AddressEntry ae2 = new AddressEntry("John", "Doe", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924", "2");
 
     /**
      * An instance of AddressEntry to load into AddressBook
      */
-    private final AddressEntry ae3 = new AddressEntry("John", "Dof", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924");
+    private final AddressEntry ae3 = new AddressEntry("John", "Dof", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924", "3");
 
     /**
      * An instance of AddressEntry to load into AddressBook
      */
-    private final AddressEntry ae4 = new AddressEntry("John", "A", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924");
+    private final AddressEntry ae4 = new AddressEntry("John", "A", "Arroyo", "Dublin", "NY", 81777, "boring@gmail.com", "925-123-7924", "4");
 
     /**
      * A method which sets standard output to print to testOutput instead of the console
