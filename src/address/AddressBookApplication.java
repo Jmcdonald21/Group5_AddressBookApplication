@@ -24,11 +24,11 @@ public class AddressBookApplication {
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        DataBaseConnect.testAddressEntryTable();
 
 
         //create instance of AddressBook for application
         address.data.AddressBook ab = new address.data.AddressBook();
+        ab.loadAddressEntryTable();
         initAddressBook(ab);
 
         //Code to Loop until user chooses to Quit

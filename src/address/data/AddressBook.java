@@ -5,6 +5,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 import java.util.*;
 import java.io.*;
 
@@ -29,7 +30,7 @@ public class AddressBook extends JFrame {
     private JPanel mainPanel;
     private JList<AddressEntry> addressEntryJList;
     private JButton findButton;
-    private JButton listButton;
+    private JButton clearButton;
     private JButton addButton;
     private JButton editButton;
     private JTextField findAddressEntry;
@@ -63,6 +64,23 @@ public class AddressBook extends JFrame {
                                                             , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText());
                 addressEntryList.computeIfAbsent(addEntry.name.getLastName(), k -> new TreeSet<>()).add(addEntry);
                 listModel.addElement(addEntry);
+
+                try {
+                    Class.forName ("oracle.jdbc.OracleDriver");
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    Connection conn =
+                            DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+                    Statement stmt = conn.createStatement();
+                    stmt.executeUpdate("INSERT INTO ADDRESSENTRYTABLE" + "VALUES(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText(), stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText())");
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
                 firstNameEntry.setText("");
                 lastNameEntry.setText("");
                 streetEntry.setText("");
@@ -87,27 +105,39 @@ public class AddressBook extends JFrame {
                 phoneEntry.setText("");
                 idEntry.setText("");
                 listModel.removeElementAt(addressEntryJList.getSelectedIndex());
-                addressEntryList.remove(addressEntryJList.getSelectedIndex());
+                TreeSet<AddressEntry> set = addressEntryList.get(addressEntryJList.getSelectedIndex());
+                set.remove(addressEntryJList.getSelectedIndex());
+
             }
         });
         addressEntryJList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                firstNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getFirstName());
-                lastNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getLastName());
-                streetEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getStreet());
-                cityEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getCity());
-                stateEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getState());
-                zipEntry.setText(Integer.toString(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getZip()));
-                emailEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getEmail());
-                phoneEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getPhone());
-                idEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getId());
+                if (e.getValueIsAdjusting()) {
+                    firstNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getFirstName());
+                    lastNameEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).name.getLastName());
+                    streetEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getStreet());
+                    cityEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getCity());
+                    stateEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getState());
+                    zipEntry.setText(Integer.toString(listModel.getElementAt(addressEntryJList.getSelectedIndex()).address.getZip()));
+                    emailEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getEmail());
+                    phoneEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getPhone());
+                    idEntry.setText(listModel.getElementAt(addressEntryJList.getSelectedIndex()).getId());
+                }
             }
         });
-        listButton.addActionListener(new ActionListener() {
+        clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                firstNameEntry.setText("");
+                lastNameEntry.setText("");
+                streetEntry.setText("");
+                cityEntry.setText("");
+                stateEntry.setText("");
+                zipEntry.setText("");
+                emailEntry.setText("");
+                phoneEntry.setText("");
+                idEntry.setText("");
             }
         });
     }
@@ -287,5 +317,53 @@ public class AddressBook extends JFrame {
             }
         }
         return result.toString();
+    }
+
+    public void loadAddressEntryTable() throws SQLException, ClassNotFoundException{
+
+        // Load the Oracle JDBC driver
+        Class.forName ("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
+
+        //check Oracle documentation online
+        // Or could do DriverManager.registerDriver (new oracle.jdbc.OracleDriver());
+
+        // Connect to the database
+        // generic host url = jdbc:oracle:thin:login/password@host:port/SID for Oracle SEE Account INFO you
+        // were given by our CS tech in an email ---THIS WILL BE DIFFERENT
+        //jdbc:oracle:thin:@//adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu
+        Connection conn =
+                DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+
+        // Create a Statement
+        Statement stmt = conn.createStatement ();
+
+        // Select the all (*) from the table JAVATEST
+
+        ResultSet rset = stmt.executeQuery("SELECT * FROM ADDRESSENTRYTABLE");
+
+        // Iterate through the result and print the employee names
+
+        while (rset.next ()) { //get next row of table returned
+            String firstName = rset.getString("firstName");
+            String lastName = rset.getString("lastName");
+            String address = rset.getString("ADDRESS");
+            String city = rset.getString("CITY");
+            String state = rset.getString("STATE");
+            int zip = rset.getInt("ZIP");
+            String phone = rset.getString("phoneNumber");
+            String email = rset.getString("EMAIL");
+            String id = rset.getString("ID");
+
+            AddressEntry ae = new AddressEntry(firstName, lastName, address, city, state, zip, phone, email, id);
+            addressEntryList.computeIfAbsent(ae.name.getLastName(), k -> new TreeSet<>()).add(ae);
+            listModel.addElement(ae);
+        }
+
+        //Close access to everything...will otherwise happen when disconnect
+        // from database.
+        rset.close();
+        stmt.close();
+        conn.close();
+
     }
 }
