@@ -74,8 +74,21 @@ public class AddressBook extends JFrame {
                     Connection conn =
                             DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
                     Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("INSERT INTO ADDRESSENTRYTABLE" + "VALUES(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText(), stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText())");
-                    stmt.close();
+
+                    String query = "INSERT INTO ADDRESSENTRYTABLE VALUES(?,?,?,?,?,?,?,?,?)";
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1,firstNameEntry.getText());
+                    ps.setString(2,lastNameEntry.getText());
+                    ps.setString(3,streetEntry.getText());
+                    ps.setString(4,cityEntry.getText());
+                    ps.setString(5,stateEntry.getText());
+                    ps.setString(6,zipEntry.getText());
+                    ps.setString(7,emailEntry.getText());
+                    ps.setString(8,phoneEntry.getText());
+                    ps.setString(9,idEntry.getText());
+                    ps.execute();
+                    ps.close();
+
                     conn.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
