@@ -64,6 +64,15 @@ public class AddressBook extends JFrame {
                                                             , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText());
                 addressEntryList.computeIfAbsent(addEntry.name.getLastName(), k -> new TreeSet<>()).add(addEntry);
                 listModel.addElement(addEntry);
+                String first = firstNameEntry.getText();
+                String last = lastNameEntry.getText();
+                String street = streetEntry.getText();
+                String city = cityEntry.getText();
+                String state = stateEntry.getText();
+                int zip = Integer.valueOf(zipEntry.getText());
+                String email = emailEntry.getText();
+                String phone = phoneEntry.getText();
+                String id = idEntry.getText();
 
                 try {
                     Class.forName ("oracle.jdbc.OracleDriver");
@@ -74,7 +83,17 @@ public class AddressBook extends JFrame {
                     Connection conn =
                             DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
                     Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("INSERT INTO ADDRESSENTRYTABLE" + "VALUES(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText(), stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText())");
+                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO ADDRESSENTRYTABLE(FIRSTNAME, LASTNAME, ADDRESS, CITY, STATE, ZIP, PHONENUMBER, EMAIL, ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    pstmt.setString(1, first);
+                    pstmt.setString(2, last);
+                    pstmt.setString(3, street);
+                    pstmt.setString(4, city);
+                    pstmt.setString(5, state);
+                    pstmt.setInt(6, zip);
+                    pstmt.setString(7, phone);
+                    pstmt.setString(8, email);
+                    pstmt.setString(9, id);
+                    pstmt.executeUpdate();
                     stmt.close();
                     conn.close();
                 } catch (SQLException ex) {
@@ -129,6 +148,10 @@ public class AddressBook extends JFrame {
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                listModel.clear();
+                for (Map.Entry<String, TreeSet<AddressEntry>> map : addressEntryList.entrySet()) {
+                    listModel.addElement(map.getValue().first());
+                }
                 firstNameEntry.setText("");
                 lastNameEntry.setText("");
                 streetEntry.setText("");
@@ -138,7 +161,25 @@ public class AddressBook extends JFrame {
                 emailEntry.setText("");
                 phoneEntry.setText("");
                 idEntry.setText("");
+                findAddressEntry.setText("");
             }
+        });
+        findButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String findName = findAddressEntry.getText();
+                listModel.clear();
+                for (String s : addressEntryList.keySet()) {
+                    if (s.contains(findName)) {
+                        listModel.addElement(addressEntryList.get(s).first());
+                    }
+                }
+
+
+            }
+
+
         });
     }
 
