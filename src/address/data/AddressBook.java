@@ -104,9 +104,26 @@ public class AddressBook extends JFrame {
                 emailEntry.setText("");
                 phoneEntry.setText("");
                 idEntry.setText("");
+                AddressEntry ab = addressEntryJList.getSelectedValue();
                 listModel.removeElementAt(addressEntryJList.getSelectedIndex());
-                TreeSet<AddressEntry> set = addressEntryList.get(addressEntryJList.getSelectedIndex());
-                set.remove(addressEntryJList.getSelectedIndex());
+                addressEntryList.remove(ab.name.getLastName());
+
+                try {
+                    Class.forName ("oracle.jdbc.OracleDriver");
+                } catch (ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    Connection conn =
+                            DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+                    Statement stmt = conn.createStatement();
+                    stmt.executeUpdate("DELETE FROM ADDRESSENTRYTABLE WHERE ID = " + ab.getId());
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
 
             }
         });
@@ -322,7 +339,7 @@ public class AddressBook extends JFrame {
     public void loadAddressEntryTable() throws SQLException, ClassNotFoundException{
 
         // Load the Oracle JDBC driver
-        Class.forName ("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
+        Class.forName("oracle.jdbc.OracleDriver"); //name of driver may change w/ versions
 
         //check Oracle documentation online
         // Or could do DriverManager.registerDriver (new oracle.jdbc.OracleDriver());

@@ -80,5 +80,18 @@
         <jarDirectory url="file://C:/Oracle/instantclient_12_2" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://C:/oracle/instantclient_12_2/instantclient_12_2" />
+        </CLASSES>
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://C:/oracle/instantclient_12_2/instantclient_12_2" />
+        </NATIVE>
+        <SOURCES />
+        <jarDirectory url="file://C:/oracle/instantclient_12_2/instantclient_12_2" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>
