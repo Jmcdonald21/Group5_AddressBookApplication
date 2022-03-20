@@ -198,6 +198,45 @@ public class AddressBook extends JFrame {
 
 
         });
+        editButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    Class.forName("oracle.jdbc.OracleDriver");
+                } catch (ClassNotFoundException ex){
+                    ex.printStackTrace();
+                }
+                try{
+                    Connection conn = DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
+                    Statement stmt = conn.createStatement();
+                    String query = "UPDATE ADDRESSENTRYTABLE SET FIRSTNAME = ?, LASTNAME = ?, ADDRESS = ?, CITY = ?, STATE = ?, ZIP = ? , PHONENUMBER = ? , EMAIL = ?, ID = ? ";
+                    PreparedStatement ps = conn.prepareStatement(query);
+                    ps.setString(1,firstNameEntry.getText());
+                    ps.setString(2,lastNameEntry.getText());
+                    ps.setString(3,streetEntry.getText());
+                    ps.setString(4,cityEntry.getText());
+                    ps.setString(5,stateEntry.getText());
+                    ps.setInt(6,Integer.valueOf(zipEntry.getText()));
+                    ps.setString(7,emailEntry.getText());
+                    ps.setString(8,phoneEntry.getText());
+                    ps.setString(9,idEntry.getText());
+                    ps.executeUpdate();
+                    stmt.close();
+                    conn.close();
+                    AddressEntry editEntry = new AddressEntry(firstNameEntry.getText(), lastNameEntry.getText(), streetEntry.getText(), cityEntry.getText()
+                            , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText());
+                    listModel.setElementAt(editEntry,addressEntryJList.getSelectedIndex());
+
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+
+
+            }
+
+        });
     }
 
 
