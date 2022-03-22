@@ -1,7 +1,7 @@
 package address.data;
 
 /**
- * @author Joseph McDonald
+ * @author Group 5
  * @version 1.0
  * @since 1.2
  *
@@ -31,6 +31,9 @@ public class AddressEntry implements Comparable<AddressEntry>{
      */
     private String id;
 
+    /**
+     * default constructor for AddressEntry
+     */
     public AddressEntry() {
         name = new Name();
         address = new Address();
@@ -55,6 +58,18 @@ public class AddressEntry implements Comparable<AddressEntry>{
         this.id = id;
     }
 
+    /**
+     * returns an AddressEntry initialized with the data in the parameters provided
+     * @param firstName
+     * @param lastName
+     * @param street
+     * @param city
+     * @param state
+     * @param zip
+     * @param email
+     * @param phone
+     * @param id
+     */
     public AddressEntry(String firstName, String lastName, String street,
                         String city, String state, int zip, String email, String phone, String id)
     {
@@ -65,6 +80,11 @@ public class AddressEntry implements Comparable<AddressEntry>{
         this.id = id;
     }
 
+    /**
+     * Override method for comparing address entries. Used to ensure no duplicate entries within the data structure.
+     * @param other
+     * @return
+     */
     @Override
     public int compareTo(AddressEntry other) {
         if(this.name.getLastName().compareTo(other.name.getLastName()) != 0)
@@ -83,6 +103,10 @@ public class AddressEntry implements Comparable<AddressEntry>{
             return 1;
     }
 
+    /**
+     * Override method for returning String info about specified variable(name object).
+     * @return
+     */
     @Override
     public String toString() {
         return name.toString();

@@ -11,7 +11,7 @@ import java.io.*;
 
 
 /**
- * @author Student Name
+ * @author Group 5
  * @version 1.0
  * @since 1.2
  *
@@ -27,26 +27,83 @@ public class AddressBook extends JFrame {
      * sorted order by last name(key) easy.
      */
     private final TreeMap<String, TreeSet<AddressEntry>> addressEntryList = new TreeMap<>();
+    /**
+     * main JPanel GUI for the address book application
+     */
     private JPanel mainPanel;
+    /**
+     * creates a JList that allows address entries to be seen within the GUI's scrollable list
+     */
     private JList<AddressEntry> addressEntryJList;
+    /**
+     * Button for find method
+     */
     private JButton findButton;
+    /**
+     * Button for clear method
+     */
     private JButton clearButton;
+    /**
+     * Button for add method
+     */
     private JButton addButton;
+    /**
+     * Button for edit method
+     */
     private JButton editButton;
+    /**
+     * TextField for find method
+     */
     private JTextField findAddressEntry;
+    /**
+     * Button for remove method
+     */
     private JButton removeButton;
+    /**
+     * TextField for first name
+     */
     private JTextField firstNameEntry;
+    /**
+     * TextField for last name
+     */
     private JTextField lastNameEntry;
+    /**
+     * TextField for street name
+     */
     private JTextField streetEntry;
+    /**
+     * TextField for city name
+     */
     private JTextField cityEntry;
+    /**
+     * TextField for state name
+     */
     private JTextField stateEntry;
+    /**
+     * TextField for zip code
+     */
     private JTextField zipEntry;
+    /**
+     * TextField for email address
+     */
     private JTextField emailEntry;
+    /**
+     * TextField for phone number
+     */
     private JTextField phoneEntry;
+    /**
+     * TextField for entry ID
+     */
     private JTextField idEntry;
+    /**
+     * Creates the List Model for the JList to be populated and edited
+     */
     private DefaultListModel<AddressEntry> listModel;
 
-    //JList for scrollable panel
+    /**
+     * Default constructor for AddressBook. This constructs all GUI aspects of the Address Book as well as handles all anonymous
+     * event handlers for each button and text field to be useable by the user.
+     */
     public AddressBook() {
         setContentPane(mainPanel);
         setTitle("Address Book");
@@ -57,6 +114,10 @@ public class AddressBook extends JFrame {
         listModel = new DefaultListModel<>();
         addressEntryJList.setModel(listModel);
 
+        /**
+         * anonymous event listener for the add button. This event listener ensures that address entries are added to the local memory data structure
+         * as well as the Oracle database connected to the address book.
+         */
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,7 +155,7 @@ public class AddressBook extends JFrame {
                     pstmt.setString(8, email);
                     pstmt.setString(9, id);
                     pstmt.executeUpdate();
-                    stmt.close();
+                    pstmt.close();
                     conn.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -111,6 +172,11 @@ public class AddressBook extends JFrame {
                 idEntry.setText("");
             }
         });
+
+        /**
+         * anonymous event listener for the remove button. This event listener ensures that selected address entries are removed
+         * from both the local memory data structure as well as the connected Oracle database
+         */
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,6 +212,11 @@ public class AddressBook extends JFrame {
 
             }
         });
+
+        /**
+         * anonymous list listener for the JList allowing users to see entries populated in the data structure. This list listener
+         * allows for selected address entries to populate their associated text fields with the appropriate data.
+         */
         addressEntryJList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -162,6 +233,12 @@ public class AddressBook extends JFrame {
                 }
             }
         });
+
+        /**
+         * anonymous event listener for the clear button. This even listener ensures that the Jlist shows all current address entries.
+         * This button is used to clear the address entries found using the find button as well as clear the text fields so that new
+         * address entries can be added.
+         */
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -181,6 +258,11 @@ public class AddressBook extends JFrame {
                 findAddressEntry.setText("");
             }
         });
+
+        /**
+         * anonymous event listener for the find button. This even listener ensures that the scrollable list is repopulated
+         * with only address entries that match the searched criteria in the associated find text field.
+         */
         findButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -198,6 +280,11 @@ public class AddressBook extends JFrame {
 
 
         });
+        /**
+         * anonymous event listener for the edit button. This event listener ensures that the edit button allows for the editing and storing of
+         * edited data related to the selected address entry. The data edited affects both the local memory data structure as well as the
+         * connected Oracle database
+         */
         editButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -209,7 +296,7 @@ public class AddressBook extends JFrame {
                 try{
                     Connection conn = DriverManager.getConnection("jdbc:oracle:thin:mcs1016/hbXylEFo@adcsdb01.csueastbay.edu:1521/mcspdb.ad.csueastbay.edu");
                     Statement stmt = conn.createStatement();
-                    String query = "UPDATE ADDRESSENTRYTABLE SET FIRSTNAME = ?, LASTNAME = ?, ADDRESS = ?, CITY = ?, STATE = ?, ZIP = ? , PHONENUMBER = ? , EMAIL = ?, ID = ? ";
+                    String query = "UPDATE ADDRESSENTRYTABLE SET FIRSTNAME = ?, LASTNAME = ?, ADDRESS = ?, CITY = ?, STATE = ?, ZIP = ? , PHONENUMBER = ? , EMAIL = ?, ID = ? WHERE ID = " + idEntry.getText();
                     PreparedStatement ps = conn.prepareStatement(query);
                     ps.setString(1,firstNameEntry.getText());
                     ps.setString(2,lastNameEntry.getText());
@@ -227,195 +314,21 @@ public class AddressBook extends JFrame {
                             , stateEntry.getText(), Integer.valueOf(zipEntry.getText()), emailEntry.getText(), phoneEntry.getText(), idEntry.getText());
                     listModel.setElementAt(editEntry,addressEntryJList.getSelectedIndex());
 
-
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-
-
 
             }
 
         });
     }
 
-
-    /** a method which prints out all fields in all entries of the address book
-     *
-     */
-    public void list() {
-
-        this.toString();
-
-    }
-
-    /** a method which removes an address entry from the address book
-     *
-     * @param lastName is the last name(or some initial consecutive chars) of the person contained
-     *                 in the AddressEntry to be removed
-     *
-     * First we get the prefixSet which is the set of all AddressEntry that have the first consecutive
-     * of the lastName of AddressEntry match the lastName parameter passed. If the size of the set is 1 then
-     * print out AddressEntry and prompt user if they wish to delete. If more than 1 element in set then print all
-     * elements and ask user to select element based on index.
-     */
-    public void remove(String lastName) {
-        //first obtain a set which contains all address entries in address book where
-        //the first characters of their last name exactly match all of the chars in parameter lastname
-        TreeSet<AddressEntry> s = this.getPrefixSet(lastName);
-        Scanner keyboard = new Scanner(System.in);
-        try {
-            if (s.size() == 1) {
-                System.out.println("The following entry was found in the address book.");
-                System.out.printf("%-3s" + s.first() + "\n", " ");
-                System.out.println("Hit 'y' to remove the entry or 'n' to return to main menu");
-                if (keyboard.nextLine().compareTo("y") == 0)
-                    addressEntryList.get(s.first().name.getLastName()).remove(s.first());
-            } else if (s.size() > 1) {
-                ArrayList<AddressEntry> list = new ArrayList<>();
-                int i = 1;
-                System.out.println("The following entries were found in the address book," +
-                        "select number of entry you wish to remove:\n");
-                for (AddressEntry entry : s) {
-                    list.add(entry);
-                    System.out.printf("%-3s" + entry + "\n\n", i + ":");
-                    i++;
-                }
-                int removalIndex = keyboard.nextInt() - 1;
-                keyboard.nextLine();
-                if(removalIndex < list.size() && removalIndex >= 0)
-                    System.out.println("Hit 'y' to remove the following entry or 'n' to return to main menu:\n");
-                System.out.printf("%-3s" + list.get(removalIndex) + "\n\n", "  ");
-                if (keyboard.nextLine().compareTo("y") == 0) {
-                    TreeSet<AddressEntry> set = addressEntryList.get(list.get(removalIndex).name.getLastName());
-                    set.remove(list.get(removalIndex));
-                }
-            } else
-                System.out.println("No entries with last name " + lastName + " were found.");
-        }
-        catch(InputMismatchException e) {
-            System.out.println("Error: You need to enter a valid integer. No action taken.");
-        }
-        catch(IndexOutOfBoundsException e) {
-            System.out.println("Error: Invalid element selection. No action taken.");
-        }
-    }
-
-    /** a method which adds an address entry to the address book
-     *
-     * @param entry is an instance of AddressEntry to add to the AddressBook
-     *
-     * If the key has never been seen before then a new TreeSet is created to contain the entry.
-     * If the key has been seen before then entry is simply added to the correct set.
-     */
-    public void add(AddressEntry entry) {
-        addressEntryList.computeIfAbsent(entry.name.getLastName(), k -> new TreeSet<>()).add(entry);
-        listModel.addElement(entry);
-    }
-
-    /** a method which reads in address entries from a text file and adds them to the address book
-     *
-     * @param filename is a string which is the name of a text file that contains address Entry data in a certain format
-     *
-     *the format is firstName\nlastName\nAdress\ncity\nState\nzip\nemail\nphoneNumber
-     */
-    public void readFromFile(String filename) {
-        try{
-            //open file
-            File file = new File(filename);
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-            //count number of entries processed
-            int count =0;
-
-            //read from file
-            while((line=br.readLine()) != null) {
-
-                this.add(new AddressEntry(line, br.readLine(), br.readLine(), br.readLine(),
-                                          br.readLine(), Integer.parseInt(br.readLine()), br.readLine(), br.readLine(), br.readLine()));
-
-                count++;
-            }
-            System.out.println("\nProcessed "+ count + " new Address Entries");
-        }
-        catch(FileNotFoundException e) {
-            //print out message for file not found
-            System.out.println(e.getMessage());
-        }
-        catch(IOException ex) {
-            //print out stack for other exceptions
-            ex.printStackTrace();
-        }
-    }
-
-    /** a method which displays one or multiple address entries
-     *
-     * @param startOf_lastName is a string which contains either a full last name or the first consecutive chars
-     * of a last name in an AddressEntry
-     */
-    public void find(String startOf_lastName) {
-        SortedMap<String, TreeSet<AddressEntry>> tempMap;
-        tempMap = addressEntryList.subMap(startOf_lastName, startOf_lastName + Character.MAX_VALUE);
-        if(tempMap.size() > 0) {
-            int i = 1;
-            //this line computes total number of Address entries in tempMap
-            System.out.println("The following " + tempMap.values().stream().mapToInt(TreeSet::size).sum() +
-                    " entries were found in the address book" +
-                    " for a last name starting with " + "\"" + startOf_lastName + "\"");
-            for(Map.Entry<String, TreeSet<AddressEntry>> entry : tempMap.entrySet()) {
-                for(AddressEntry item : entry.getValue()) {
-                    System.out.printf("%-3s" + item + "\n\n", i + ":");
-                    i++;
-                }
-            }
-        }
-        else
-            System.out.println("There were no entries were found in the address book" +
-                    " for a last name starting with " + "\"" + startOf_lastName + "\"");
-    }
-
-    /** a method that returns a set of address entries in which the first characters in the
-     *  last name of each entry in the returned set are an exact match for the characters passed
-     *  to the function
-     *
-     * @param startOf_lastName full last name or start of last name
-     * @return A TreeSet which contains all of the AddressEntry instances whose lastName field
-     * matches from the start every char provided in startOf_lastName.
-     */
-    private TreeSet<AddressEntry> getPrefixSet(String startOf_lastName) {
-        SortedMap<String, TreeSet<AddressEntry>> tempMap;
-        TreeSet<AddressEntry> tempSet = new TreeSet<>();
-        tempMap = addressEntryList.subMap(startOf_lastName, startOf_lastName + Character.MAX_VALUE);
-
-        for(Map.Entry<String, TreeSet<AddressEntry>> entry : tempMap.entrySet()) {
-            tempSet.addAll(entry.getValue());
-        }
-        return tempSet;
-    }
-
     /**
-     * removes all AddressEntry from the AddressBook
+     * method connects to the specified Oracle database and allows for the injection of all information
+     * from the database into the local memory data structure.
+     * @throws SQLException
+     * @throws ClassNotFoundException
      */
-    public void clear() {
-        addressEntryList.clear();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        int i = 1;
-        for(Map.Entry<String, TreeSet<AddressEntry>> entry : addressEntryList.entrySet()) {
-            for(AddressEntry item : entry.getValue()) {
-                if(item != null) {
-                    result.append(String.format("%-3s" + item + "\n\n", i + ":"));
-                    i++;
-                }
-            }
-        }
-        return result.toString();
-    }
-
     public void loadAddressEntryTable() throws SQLException, ClassNotFoundException{
 
         // Load the Oracle JDBC driver
@@ -455,12 +368,10 @@ public class AddressBook extends JFrame {
             addressEntryList.computeIfAbsent(ae.name.getLastName(), k -> new TreeSet<>()).add(ae);
             listModel.addElement(ae);
         }
-
         //Close access to everything...will otherwise happen when disconnect
         // from database.
         rset.close();
         stmt.close();
         conn.close();
-
     }
 }

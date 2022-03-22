@@ -106,6 +106,10 @@ public class Address {
         return zip;
     }
 
+    /**
+     * Override method for returning String information about the specified variables(street, city, state, zip).
+     * @return
+     */
     @Override
     public String toString() {
         return street + "\n   " + city + ", " + state + " " + zip;
